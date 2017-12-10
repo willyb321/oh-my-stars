@@ -39,8 +39,6 @@ class StarredDB(object):
 
 	def _build_index(self):
 		self._col.ensure_index([('name', pymongo.TEXT), ('language', pymongo.TEXT), ('description', pymongo.TEXT)], name='search_index_name', default_language="en", language_override="en")
-		# self._col.ensure_index([('description', pymongo.TEXT)], name='search_index_desc', default_language="en", language_override="en")
-		# self._col.ensure_index([('description', pymongo.TEXT)], name='search_index_desc', default_language="en", language_override="en")
 
 	def update(self, repo_list):
 
@@ -79,7 +77,6 @@ class StarredDB(object):
 		if keywords:
 			for word in keywords:
 				results = self._col.find({'description': re.compile(word, re.IGNORECASE)})
-				db = pymongo.MongoClient('localhost', 54373)
 				for result in results:
 					# print(result)
 					keywords_results.append(result)
