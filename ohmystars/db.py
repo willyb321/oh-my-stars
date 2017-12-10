@@ -11,7 +11,7 @@ import pymongo
 class StarredDB(object):
 
 	def __init__(self, mode):
-		client = pymongo.MongoClient('localhost', 54373)
+		client = pymongo.MongoClient()
 		db = client['oh-my-stars']
 		collection = db.stars
 		latest = db.latest
