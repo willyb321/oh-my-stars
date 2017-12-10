@@ -8,7 +8,7 @@ import re
 import pymongo
 
 
-class StarredDB(object):
+class StarredDBMew(object):
 
 	def __init__(self, mode):
 		client = pymongo.MongoClient('localhost', 54373)
