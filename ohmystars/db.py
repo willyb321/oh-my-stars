@@ -78,7 +78,6 @@ class StarredDB(object):
 			for word in keywords:
 				results = self._col.find({'description': re.compile(word, re.IGNORECASE)})
 				for result in results:
-					# print(result)
 					keywords_results.append(result)
 
 		if languages and keywords:
@@ -87,8 +86,4 @@ class StarredDB(object):
 				language_results).intersection(*keywords_results))
 		else:
 			search_results = language_results + keywords_results
-		# for doc in search_results:
-
-		# remove duplicates then sort by id
-		# search_results = sorted(list(set(search_results)))
 		return search_results

@@ -90,7 +90,6 @@ class SearchResultView(object):
 	def _highlight_keywords(self, text, keywords, fore_color=Fore.GREEN):
 		if keywords:
 			for keyword in keywords:
-				# keyword = keyword
 				regex = re.compile(keyword, re.I | re.U | re.M)
 				color = fore_color + Back.RED + Style.BRIGHT
 				text = regex.sub(
