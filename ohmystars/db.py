@@ -56,8 +56,8 @@ class StarredDB(object):
 
 	def get_latest_repo_full_name(self):
 		latest_repo = self._latest.find_one()
-		if latest_repo and latest_repo.full_name:
-			return latest_repo.full_name
+		if latest_repo and latest_repo.get('full_name'):
+			return latest_repo.get('full_name')
 		else:
 			return ''
 

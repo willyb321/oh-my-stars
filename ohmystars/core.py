@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from colorama import Fore, Back, Style
 from getpass import getpass, getuser
-from github3 import login
+from github3 import authorize, login
 from .view import SearchResultView
 from .db import StarredDB
 from . import __version__
@@ -25,6 +25,7 @@ except NameError:
 	prompt = input
 
 MY_STARS_HOME = os.path.join(os.path.expanduser("~"), ".oh-my-stars")
+CREDENTIALS_FILE = os.path.join(os.path.expanduser("~"), ".oh-my-stars", "l.json")
 
 
 def main():
@@ -47,31 +48,42 @@ def main():
 		version='%(prog)s ' + __version__)
 
 	args = parser.parse_args()
-
 	if args.update or args.reindex:
-
-		try:
-			user = prompt('GitHub username: ')
-		except KeyboardInterrupt:
-			user = getuser()
-		else:
-			if not user:
+		if not os.path.exists(CREDENTIALS_FILE):
+			try:
+				user = prompt('GitHub username: ')
+			except KeyboardInterrupt:
 				user = getuser()
+			else:
+				if not user:
+					user = getuser()
 
-		password = getpass('GitHub password for {0}: '.format(user))
+			password = getpass('GitHub password for {0}: '.format(user))
 
-		if not password:
-			print(Fore.RED + "password is required.")
-			sys.exit(1)
+			if not password:
+				print(Fore.RED + "password is required.")
+				sys.exit(1)
 
 		def gh2f():
 			code = ''
 			while not code:
 				code = prompt('Enter 2FA code: ')
 			return code
-		g = login(user, password, two_factor_callback=gh2f)
-
-		mode = 't' if args.reindex else 'w'
+		note = 'Oh My Stars'
+		note_url = 'https://williamblythe.info'
+		scopes = ['read:user']
+		if not os.path.exists(CREDENTIALS_FILE):	
+			auth = authorize(user, password, scopes, note, note_url)
+			with open(CREDENTIALS_FILE, 'w') as fd:
+				fd.write(auth.token + '\n')
+				fd.write(auth.id)
+		else:
+			token = id = ''
+			with open(CREDENTIALS_FILE, 'r') as fd:
+				token = fd.readline().strip()  # Can't hurt to be paranoid
+				id = fd.readline().strip()
+			g = login(token=token)
+			mode = 't' if args.reindex else 'w'
 
 		with StarredDB(mode) as db:
 			repo_list = []
