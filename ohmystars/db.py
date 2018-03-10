@@ -75,7 +75,7 @@ class StarredDB(object):
 
 		keywords_results = []
 		if keywords:
-			results = self._col.find({'$text': {'$search': " ".join(keywords)}})
+			results = self._col.find({'$text': {'$search': "\" \"".join(keywords)}})
 			for result in results:
 				keywords_results.append(result)
 
